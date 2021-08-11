@@ -14,11 +14,13 @@ case $answer in
     a)    echo Your current USB power use is
 usb-devices | grep 'Product=\|MxPwr';;
     b)    echo Total lifetime writes to SSD, assuming  device sda
+    #This requires smartmontools to be installed
 sudo smartctl -A /dev/sda | awk '/^241/ { print "TBW: "($10 * 512) * 1.0e-12, "T
 B" } ';;
     c)    echo Current power use
 awk '{print $1*10^-6 " W"}' /sys/class/power_supply/BAT0/power_now;;
     d)  echo "Did you forget to do the status of DD? Check your other session"
+    #because I never know how long a dd will run for... this runs in this session but outputs in the session with dd running
 watch -n5 'sudo kill -USR1 $(pgrep ^dd)';;
     e)    echo "Here goes"
  neofetch;;

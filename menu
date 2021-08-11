@@ -1,0 +1,33 @@
+#!/bin/sh
+# How to use case-esac
+echo "Please enter an option"
+echo "Press A for current power use of usb devices"
+echo "Press B for total lifetime writes to usb (sudo access required)"
+echo "Press C for the current power use"
+echo "Press D For the status of any running DD process"
+echo "Press E for the neofetch view"
+echo "Press F for system info"
+echo "Press G for remote backup of Music to server"
+echo "Press H for remote backup of Pictures to server"
+read answer
+case $answer in
+    a)    echo Your current USB power use is
+usb-devices | grep 'Product=\|MxPwr';;
+    b)    echo Total lifetime writes to SSD, assuming  device sda
+sudo smartctl -A /dev/sda | awk '/^241/ { print "TBW: "($10 * 512) * 1.0e-12, "T
+B" } ';;
+    c)    echo Current power use
+awk '{print $1*10^-6 " W"}' /sys/class/power_supply/BAT0/power_now;;
+    d)  echo "Did you forget to do the status of DD? Check your other session"
+watch -n5 'sudo kill -USR1 $(pgrep ^dd)';;
+    e)    echo "Here goes"
+ neofetch;;
+    f)   echo "All the stats"
+inxi -Fxrz;;
+    g)   echo "Backing up please wait"
+rsync -avz /home/kris/Music/ kris@192.168.1.221:/home/kris/backup/Music;;
+    h)   echo "backing up please wait"
+rsync -avz /home/kris/Pictures/ kris@192.168.1.245:/home/kris/backup/picture
+s;;
+    *)   echo You did not chose a, b, c, d, e, f, g  or h;;
+esac
